@@ -57,6 +57,7 @@
     "test:standard-fonts": "tsx --conditions tsx tests/standard-fonts.spec.ts",
     "test:collider-field": "tsx --conditions tsx tests/collider-field.spec.ts",
     "test:engine": "tsx --conditions tsx tests/engine-regression.spec.ts",
+    "test:small-caps": "tsx --conditions tsx tests/small-caps.spec.ts",
     "test:spatial-ir": "tsx --conditions tsx tests/spatial-ir-regression.spec.ts",
     "test:spatial-ir-engine": "tsx --conditions tsx tests/spatial-ir-engine.spec.ts",
     "test:spatial-ir-strict": "tsx --conditions tsx tests/spatial-ir-strict.spec.ts",
@@ -77,10 +78,11 @@
     "proof:saucer": "tsx --conditions tsx tests/proofs/generate-saucer-flipbook.ts",
     "proof:async-thought": "tsx --conditions tsx tests/proofs/generate-async-thought-board.ts",
     "proof:streaming-thought": "tsx --conditions tsx tests/proofs/generate-streaming-thought-board.ts",
-    "test": "npm run test:modules && npm run test:flat && npm run test:scripting && npm run test:strip && npm run test:publication && npm run test:standard-fonts && npm run test:spatial-ir && npm run test:toc && npm run test:engine && npm run test:pdf-context-text",
+    "test": "npm run test:modules && npm run test:flat && npm run test:scripting && npm run test:strip && npm run test:publication && npm run test:standard-fonts && npm run test:spatial-ir && npm run test:toc && npm run test:engine && npm run test:pdf-context-text && npm run test:small-caps",
+    "test:small-caps": "tsx --conditions tsx tests/small-caps.spec.ts",
     "test:toc": "tsx --conditions tsx tests/native-toc.spec.ts",
     "test:pdf-context-text": "tsx --conditions tsx tests/pdf-context-text.spec.ts"
-  },
+  }
   "dependencies": {
     "bidi-js": "^1.0.3",
     "dfa": "^1.2.0",
@@ -103,3 +105,4 @@
     "access": "public"
   }
 }
+// weave: run 'weave explain engine/package.json' for per-hunk detail, 'weave check' to verify your resolution

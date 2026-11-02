@@ -19,6 +19,8 @@ const INHERITABLE_RICH_STYLE_KEYS = new Set([
     'fontSize',
     'fontWeight',
     'fontStyle',
+    'fontVariant',
+    'fontVariantCaps',
     'lineHeight',
     'lineHeightPx',
     'letterSpacing',
@@ -222,17 +224,7 @@ function getRichSegmentsAtOffset(
 
     if (element.type === 'text' && element.content !== undefined && (!element.children || element.children.length === 0)) {
         const text = params.transformContent(element.content, elementType);
-        const sourceStart = cursor.value;
-        const sourceEnd = sourceStart + text.length;
-        cursor.value = sourceEnd;
-        segments.push({
-            text,
-            sourceStart,
-            sourceEnd,
-            style: currentStyle,
-            fontFamily: currentStyle.fontFamily,
-            ...(currentLinkTarget ? { linkTarget: currentLinkTarget } : {})
-        });
+        emitTextSegments(text, currentStyle, currentLinkTarget, cursor, segments);
         return segments;
     }
 
@@ -245,18 +237,58 @@ function getRichSegmentsAtOffset(
         segments.push(...applyWrapperInlineMargins(childSegments, currentStyle));
     } else if (element.content !== undefined) {
         const text = params.transformContent(element.content, elementType);
-        const sourceStart = cursor.value;
-        const sourceEnd = sourceStart + text.length;
-        cursor.value = sourceEnd;
-        segments.push({
-            text,
-            sourceStart,
-            sourceEnd,
-            style: currentStyle,
-            fontFamily: currentStyle.fontFamily,
-            ...(currentLinkTarget ? { linkTarget: currentLinkTarget } : {})
-        });
+        emitTextSegments(text, currentStyle, currentLinkTarget, cursor, segments);
     }
 
     return segments;
+}
+function emitTextSegments(
+    text: string,
+    currentStyle: Record<string, any>,
+    currentLinkTarget: string | undefined,
+    cursor: { value: number },
+    segments: TextSegment[]
+): void {
+    const variant = currentStyle.fontVariant || currentStyle.fontVariantCaps;
+    const isSmallCaps = variant === 'small-caps' || variant === 'all-small-caps';
+    if (isSmallCaps && /[a-z]/i.test(text)) {
+        const isAllSmall = variant === 'all-small-caps';
+        const parts = isAllSmall ? [text] : text.split(/([a-z]+)/);
+        let localOffset = cursor.value;
+        for (const part of parts) {
+            if (!part) continue;
+            const isLower = isAllSmall || /^[a-z]+$/.test(part);
+            const partText = isLower ? part.toUpperCase() : part;
+            const sourceStart = localOffset;
+            const sourceEnd = sourceStart + part.length;
+            localOffset = sourceEnd;
+            const baseFontSize = Number(currentStyle.fontSize || 12);
+            const segStyle = isLower ? {
+                ...currentStyle,
+                fontSize: Number((baseFontSize * 0.75).toFixed(3))
+            } : currentStyle;
+            segments.push({
+                text: partText,
+                sourceStart,
+                sourceEnd,
+                style: segStyle,
+                fontFamily: segStyle.fontFamily,
+                ...(currentLinkTarget ? { linkTarget: currentLinkTarget } : {})
+            });
+        }
+        cursor.value = localOffset;
+        return;
+    }
+
+    const sourceStart = cursor.value;
+    const sourceEnd = sourceStart + text.length;
+    cursor.value = sourceEnd;
+    segments.push({
+        text,
+        sourceStart,
+        sourceEnd,
+        style: currentStyle,
+        fontFamily: currentStyle.fontFamily,
+        ...(currentLinkTarget ? { linkTarget: currentLinkTarget } : {})
+    });
 }

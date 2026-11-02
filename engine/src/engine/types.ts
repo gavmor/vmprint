@@ -1,16 +1,29 @@
 export type ElementType = string;
+
 export type TextDirection = 'ltr' | 'rtl' | 'auto';
+
 export type HyphenationMode = 'off' | 'auto' | 'soft';
+
 export type JustifyEngineMode = 'legacy' | 'advanced';
+
 export type JustifyStrategy = 'auto' | 'space' | 'inter-character';
+
 export type ImageFitMode = 'contain' | 'fill';
+
 export type PageReservationSelector = 'first' | 'odd' | 'even' | 'all';
+
 export type VmprintDocumentVersion = '1.1';
+
 export type VmprintIRVersion = '1.0';
+
 export type ScriptMethodSource = string | string[];
+
 export type SimulationProgressionPolicy = 'until-settled' | 'fixed-tick-count';
+
 export type SimulationStopReason = 'settled' | 'fixed-tick-count' | 'page-limit';
+
 export type PublicationMode = 'paginated' | 'continuous';
+
 export type PrintBreakPolicy = 'preserve' | 'ignore';
 
 export type PageSizeSpec = 'A4' | 'LETTER' | { width: number, height: number };
@@ -111,7 +124,9 @@ export interface InlineObjectMetrics {
 }
 
 export type OverflowPolicy = 'clip' | 'move-whole' | 'error';
+
 export type ZoneFrameOverflow = 'move-whole' | 'continue';
+
 export type ZoneWorldBehavior = 'fixed' | 'spanning' | 'expandable';
 
 export interface ZoneRegionRect {
@@ -253,6 +268,7 @@ export interface TableLayoutOptions {
 }
 
 export type ListKind = 'unordered' | 'ordered';
+
 export type ListMarkerStyle =
     | 'disc'
     | 'bullet'
@@ -404,7 +420,9 @@ export type StoryLayoutMode = 'float' | 'story-absolute';
  *   'none'       – image overlays text with no reflow
  */
 export type StoryWrapMode = 'around' | 'top-bottom' | 'none';
+
 export type TraversalInteractionPolicy = 'auto' | 'wrap' | 'overpass' | 'ignore';
+
 export type MicroLanePolicy = 'allow' | 'balanced' | 'typography';
 
 /** Which margin a float anchors to. */
@@ -522,6 +540,8 @@ export interface ElementStyle {
     fontSize?: number;
     fontWeight?: number | string;
     fontStyle?: string;
+    fontVariant?: 'normal' | 'small-caps';
+    fontVariantCaps?: 'normal' | 'small-caps' | 'all-small-caps';
     textAlign?: 'left' | 'right' | 'center' | 'justify';
     lang?: string;
     direction?: TextDirection;

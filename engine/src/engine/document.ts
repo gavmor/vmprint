@@ -124,6 +124,8 @@ const STYLE_KEYS = new Set([
     'fontSize',
     'fontWeight',
     'fontStyle',
+    'fontVariant',
+    'fontVariantCaps',
     'textAlign',
     'lang',
     'direction',

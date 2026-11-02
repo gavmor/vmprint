@@ -9,7 +9,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Fixed
-
 - **Long split headings after keep-with-next chapters**: Publish the accepted
   chapter prefix before its split section tail. Preserve the section's complete
   authored title instead of using a page-dependent visible prefix, which could
@@ -38,6 +37,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Font variant small-caps**: Support `fontVariant: "small-caps"` and `fontVariantCaps` in
+  `ElementStyle` with synthetic small caps fallback for fonts lacking an OpenType `smcp` table.
 - **Runnable native TOC book example**:
   [JSON, Node.js runner, and authoring guide](docs/examples/native-toc/README.md)
   using the existing `loadDocument` → `VMPrintEngine` → `layout()` API. The
