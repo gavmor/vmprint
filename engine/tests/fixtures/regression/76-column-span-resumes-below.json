@@ -1,0 +1,59 @@
+{
+  "documentVersion": "1.1",
+  "layout": {
+    "pageSize": "LETTER",
+    "margins": {
+      "top": 50,
+      "right": 50,
+      "bottom": 50,
+      "left": 50
+    },
+    "fontFamily": "Arimo",
+    "fontSize": 10,
+    "lineHeight": 1.4
+  },
+  "styles": {
+    "heading": {
+      "fontSize": 16,
+      "fontWeight": 700,
+      "marginBottom": 6
+    },
+    "body": {
+      "marginBottom": 6,
+      "allowLineSplit": true
+    }
+  },
+  "elements": [
+    {
+      "type": "story",
+      "content": "",
+      "columns": 2,
+      "gutter": 16,
+      "balance": false,
+      "children": [
+        {
+          "type": "body",
+          "content": "before0 before1 before2 before3 before4 before5 before6 before7 before8 before9 before10 before11 before12 before13 before14 before15 before16 before17 before18 before19 before20 before21 before22 before23 before24 before25 before26 before27 before28 before29 before30 before31 before32 before33 before34 before35 before36 before37 before38 before39 before40 before41 before42 before43 before44 before45 before46 before47 before48 before49 before50 before51 before52 before53 before54 before55 before56 before57 before58 before59 before60 before61 before62 before63 before64 before65 before66 before67 before68 before69 before70 before71 before72 before73 before74 before75 before76 before77 before78 before79 before80 before81 before82 before83 before84 before85 before86 before87 before88 before89 before90 before91 before92 before93 before94 before95 before96 before97 before98 before99 before100 before101 before102 before103 before104 before105 before106 before107 before108 before109 before110 before111 before112 before113 before114 before115 before116 before117 before118 before119",
+          "properties": {
+            "sourceId": "before"
+          }
+        },
+        {
+          "type": "heading",
+          "content": "Full-width heading",
+          "columnSpan": "all",
+          "properties": {
+            "sourceId": "span"
+          }
+        },
+        {
+          "type": "body",
+          "content": "after0 after1 after2 after3 after4 after5 after6 after7 after8 after9 after10 after11 after12 after13 after14 after15 after16 after17 after18 after19 after20 after21 after22 after23 after24 after25 after26 after27 after28 after29 after30 after31 after32 after33 after34 after35 after36 after37 after38 after39 after40 after41 after42 after43 after44 after45 after46 after47 after48 after49 after50 after51 after52 after53 after54 after55 after56 after57 after58 after59 after60 after61 after62 after63 after64 after65 after66 after67 after68 after69 after70 after71 after72 after73 after74 after75 after76 after77 after78 after79 after80 after81 after82 after83 after84 after85 after86 after87 after88 after89 after90 after91 after92 after93 after94 after95 after96 after97 after98 after99 after100 after101 after102 after103 after104 after105 after106 after107 after108 after109 after110 after111 after112 after113 after114 after115 after116 after117 after118 after119 after120 after121 after122 after123 after124 after125 after126 after127 after128 after129 after130 after131 after132 after133 after134 after135 after136 after137 after138 after139 after140 after141 after142 after143 after144 after145 after146 after147 after148 after149 after150 after151 after152 after153 after154 after155 after156 after157 after158 after159 after160 after161 after162 after163 after164 after165 after166 after167 after168 after169 after170 after171 after172 after173 after174 after175 after176 after177 after178 after179 after180 after181 after182 after183 after184 after185 after186 after187 after188 after189 after190 after191 after192 after193 after194 after195 after196 after197 after198 after199 after200 after201 after202 after203 after204 after205 after206 after207 after208 after209 after210 after211 after212 after213 after214 after215 after216 after217 after218 after219 after220 after221 after222 after223 after224 after225 after226 after227 after228 after229 after230 after231 after232 after233 after234 after235 after236 after237 after238 after239 after240 after241 after242 after243 after244 after245 after246 after247 after248 after249 after250 after251 after252 after253 after254 after255 after256 after257 after258 after259 after260 after261 after262 after263 after264 after265 after266 after267 after268 after269 after270 after271 after272 after273 after274 after275 after276 after277 after278 after279 after280 after281 after282 after283 after284 after285 after286 after287 after288 after289 after290 after291 after292 after293 after294 after295 after296 after297 after298 after299 after300 after301 after302 after303 after304 after305 after306 after307 after308 after309 after310 after311 after312 after313 after314 after315 after316 after317 after318 after319 after320 after321 after322 after323 after324 after325 after326 after327 after328 after329 after330 after331 after332 after333 after334 after335 after336 after337 after338 after339 after340 after341 after342 after343 after344 after345 after346 after347 after348 after349 after350 after351 after352 after353 after354 after355 after356 after357 after358 after359 after360 after361 after362 after363 after364 after365 after366 after367 after368 after369 after370 after371 after372 after373 after374 after375 after376 after377 after378 after379 after380 after381 after382 after383 after384 after385 after386 after387 after388 after389 after390 after391 after392 after393 after394 after395 after396 after397 after398 after399 after400 after401 after402 after403 after404 after405 after406 after407 after408 after409 after410 after411 after412 after413 after414 after415 after416 after417 after418 after419 after420 after421 after422 after423 after424 after425 after426 after427 after428 after429 after430 after431 after432 after433 after434 after435 after436 after437 after438 after439 after440 after441 after442 after443 after444 after445 after446 after447 after448 after449 after450 after451 after452 after453 after454 after455 after456 after457 after458 after459 after460 after461 after462 after463 after464 after465 after466 after467 after468 after469 after470 after471 after472 after473 after474 after475 after476 after477 after478 after479 after480 after481 after482 after483 after484 after485 after486 after487 after488 after489 after490 after491 after492 after493 after494 after495 after496 after497 after498 after499 after500 after501 after502 after503 after504 after505 after506 after507 after508 after509 after510 after511 after512 after513 after514 after515 after516 after517 after518 after519 after520 after521 after522 after523 after524 after525 after526 after527 after528 after529 after530 after531 after532 after533 after534 after535 after536 after537 after538 after539 after540 after541 after542 after543 after544 after545 after546 after547 after548 after549 after550 after551 after552 after553 after554 after555 after556 after557 after558 after559 after560 after561 after562 after563 after564 after565 after566 after567 after568 after569 after570 after571 after572 after573 after574 after575 after576 after577 after578 after579 after580 after581 after582 after583 after584 after585 after586 after587 after588 after589 after590 after591 after592 after593 after594 after595 after596 after597 after598 after599 after600 after601 after602 after603 after604 after605 after606 after607 after608 after609 after610 after611 after612 after613 after614 after615 after616 after617 after618 after619 after620 after621 after622 after623 after624 after625 after626 after627 after628 after629 after630 after631 after632 after633 after634 after635 after636 after637 after638 after639 after640 after641 after642 after643 after644 after645 after646 after647 after648 after649 after650 after651 after652 after653 after654 after655 after656 after657 after658 after659 after660 after661 after662 after663 after664 after665 after666 after667 after668 after669 after670 after671 after672 after673 after674 after675 after676 after677 after678 after679 after680 after681 after682 after683 after684 after685 after686 after687 after688 after689 after690 after691 after692 after693 after694 after695 after696 after697 after698 after699",
+          "properties": {
+            "sourceId": "after"
+          }
+        }
+      ]
+    }
+  ]
+}

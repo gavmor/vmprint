@@ -1392,6 +1392,8 @@ export class StoryPackager implements PackagerUnit {
 
         let regionIndex = 0;
         let cursorY = 0;
+        // Columns that follow a column-spanning element must start below it, not at the top of the story.
+        let columnFloorY = 0;
         let hasOverflow = false;
         let continuationElement: Element | null = null;
         let continuationPackager: PackagerUnit | null = null;
@@ -1400,7 +1402,7 @@ export class StoryPackager implements PackagerUnit {
         const goNextRegion = (): boolean => {
             if (regionIndex + 1 >= regions.length) return false;
             regionIndex += 1;
-            cursorY = 0;
+            cursorY = columnFloorY;
             return true;
         };
 
@@ -1626,7 +1628,7 @@ export class StoryPackager implements PackagerUnit {
 
                 // Reset column flow: restart at column 0, cursor below the span.
                 regionIndex = 0;
-                cursorY = spanTopY + spanH;
+                cursorY = columnFloorY = spanTopY + spanH;
                 continue;
             }
 
