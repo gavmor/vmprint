@@ -1178,8 +1178,8 @@ These are NOT nested inside `properties` in AST 1.1. This is the most common mig
 { "type": "image", "image": { ... }, "properties": { "style": { ... } } }
 ```
 
-### Block floats require explicit `style.width` and `style.height`
-Non-image block floats **must** declare both in `properties.style`. If either is missing, the element silently falls through to normal block layout. Image floats can omit them.
+### Block floats require authored `style.width`; `style.height` is optional
+Non-image block floats (such as pull quotes, sidebars, and nested multi-paragraph stories) require `properties.style.width`. When `style.height` is omitted, the engine automatically measures the content's natural height at that authored width. Multi-paragraph sidebars taller than a column or full page split cleanly across column and page boundaries with surrounding text flowing around them.
 
 ### Drop cap MUST precede float obstacle
 In story children, the drop-cap paragraph must come **before** the float obstacle. If you reverse the order, both anchor at the same y position causing visual overlap.

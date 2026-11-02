@@ -1,0 +1,186 @@
+{
+  "documentVersion": "1.1",
+  "layout": {
+    "pageSize": "LETTER",
+    "margins": {
+      "top": 50,
+      "right": 50,
+      "bottom": 50,
+      "left": 50
+    },
+    "fontFamily": "Arimo",
+    "fontSize": 10,
+    "lineHeight": 1.4,
+    "storyWrapOpticalUnderhang": true
+  },
+  "fonts": {
+    "regular": "Arimo"
+  },
+  "styles": {
+    "kicker": {
+      "fontSize": 7,
+      "letterSpacing": 1.5,
+      "textAlign": "center",
+      "marginBottom": 8,
+      "keepWithNext": true
+    },
+    "heading": {
+      "fontSize": 20,
+      "fontWeight": "bold",
+      "marginBottom": 12,
+      "keepWithNext": true
+    },
+    "body": {
+      "marginBottom": 10,
+      "allowLineSplit": true,
+      "orphans": 2,
+      "widows": 2,
+      "textAlign": "justify"
+    },
+    "sidebar-title": {
+      "fontSize": 8.5,
+      "fontWeight": "bold",
+      "color": "#8b3027",
+      "marginBottom": 4,
+      "keepWithNext": true
+    },
+    "sidebar-para": {
+      "fontSize": 7.5,
+      "lineHeight": 1.3,
+      "marginBottom": 4,
+      "allowLineSplit": true,
+      "textAlign": "left"
+    },
+    "section-break": {
+      "fontSize": 11,
+      "fontWeight": "bold",
+      "textAlign": "center",
+      "color": "#ffffff",
+      "backgroundColor": "#2c3e50",
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "marginTop": 6,
+      "marginBottom": 6
+    }
+  },
+  "elements": [
+    {
+      "type": "kicker",
+      "content": "LAYOUT ENGINE · STORY FLOAT REGRESSION"
+    },
+    {
+      "type": "heading",
+      "content": "Nested Multi-Paragraph Story Float with Automatic Height"
+    },
+    {
+      "type": "story",
+      "columns": 2,
+      "gutter": 16,
+      "children": [
+        {
+          "type": "body",
+          "content": "This story demonstrates native block and story float support with authored width and automatic content height measurement. Body prose flows continuously through multi-column regions while floating sidebar content occupies an anchored side lane.",
+          "properties": {
+            "sourceId": "intro-para"
+          }
+        },
+        {
+          "type": "story",
+          "columns": 1,
+          "placement": {
+            "mode": "float",
+            "align": "right",
+            "wrap": "around",
+            "gap": 10
+          },
+          "properties": {
+            "sourceId": "nested-sidebar-float",
+            "style": {
+              "width": 100
+            }
+          },
+          "children": [
+            {
+              "type": "sidebar-title",
+              "content": "A BRIEF TIMELINE",
+              "properties": {
+                "sourceId": "sidebar-title"
+              }
+            },
+            {
+              "type": "sidebar-para",
+              "content": "Kingdom (753–509 BCE): Early kings and legendary origins of the city.",
+              "properties": {
+                "sourceId": "sidebar-para-1"
+              }
+            },
+            {
+              "type": "sidebar-para",
+              "content": "Republic (509–27 BCE): Magistrates, Senate, territorial expansion, and civil strife.",
+              "properties": {
+                "sourceId": "sidebar-para-2"
+              }
+            },
+            {
+              "type": "sidebar-para",
+              "content": "Principate (27 BCE–later third century): Imperial rule begins under Augustus with continued Republican forms.",
+              "properties": {
+                "sourceId": "sidebar-para-3"
+              }
+            },
+            {
+              "type": "sidebar-para",
+              "content": "High Empire (about 100–120 CE): The reigns of Trajan and Hadrian mark stability and maximum territorial reach.",
+              "properties": {
+                "sourceId": "sidebar-para-4"
+              }
+            },
+            {
+              "type": "sidebar-para",
+              "content": "Later Empire: Administrative partition under Diocletian and transition toward the medieval Byzantine world.",
+              "properties": {
+                "sourceId": "sidebar-para-5"
+              }
+            }
+          ]
+        },
+        {
+          "type": "body",
+          "content": "The surrounding body copy flows around the floating multi-paragraph sidebar note. The per-line obstacle resolver subtracts the obstacle width from lines that coincide vertically with the sidebar, narrowing body text intervals while the sidebar continues down the right edge of the column. Once the sidebar ends, the full column width is cleanly restored.",
+          "properties": {
+            "sourceId": "wrap-para-1"
+          }
+        },
+        {
+          "type": "body",
+          "content": "A second paragraph confirms that text flowing alongside the float maintains correct justification and margin boundaries. When content crosses between column regions, the engine preserves runaround geometry and ensures neither float boxes nor body lines overlap or leak into adjacent regions.",
+          "properties": {
+            "sourceId": "wrap-para-2"
+          }
+        },
+        {
+          "type": "section-break",
+          "content": "Chronicle Continuation Banner",
+          "columnSpan": "all",
+          "properties": {
+            "sourceId": "chronicle-span"
+          }
+        },
+        {
+          "type": "body",
+          "content": "This paragraph appears below the column-spanning banner. Column flow resets to column zero below the banner, ensuring that the full-width heading clears all preceding float obstacles and boxes without visual collisions.",
+          "properties": {
+            "sourceId": "post-span-para-1"
+          }
+        },
+        {
+          "type": "body",
+          "content": "A final paragraph completes the two-column layout verification and confirms that normal multi-column reading order resumes unimpeded after both the float and the spanning barrier.",
+          "properties": {
+            "sourceId": "post-span-para-2"
+          }
+        }
+      ]
+    }
+  ]
+}

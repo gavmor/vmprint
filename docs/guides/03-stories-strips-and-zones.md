@@ -94,8 +94,13 @@ Floats are not limited to images. Any story child — a pull quote, a sidebar
 note, a box — can be declared as a float. The engine treats it as a spatial
 obstacle regardless of content type.
 
-For non-image floats, give the element an explicit `width` and `height` in
-`properties.style` so the obstacle geometry is known up front.
+For non-image floats (such as pull quotes, sidebars, or nested multi-paragraph
+stories), provide an authored `width` in `properties.style`. An explicit `height`
+is optional: when omitted, the layout engine measures the content's natural
+height at that width and automatically wraps surrounding text around it.
+Multi-paragraph sidebars taller than the remaining column or page height split
+cleanly across column and page boundaries, continuing as active floats while
+surrounding text flows alongside them.
 
 ### Story-Absolute
 

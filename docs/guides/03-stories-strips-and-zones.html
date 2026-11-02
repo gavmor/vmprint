@@ -110,8 +110,13 @@ text stream flows around it.</p>
 <p>Floats are not limited to images. Any story child — a pull quote, a sidebar
 note, a box — can be declared as a float. The engine treats it as a spatial
 obstacle regardless of content type.</p>
-<p>For non-image floats, give the element an explicit <code>width</code> and <code>height</code> in
-<code>properties.style</code> so the obstacle geometry is known up front.</p>
+<p>For non-image floats (such as pull quotes, sidebars, or nested multi-paragraph
+stories), provide an authored <code>width</code> in <code>properties.style</code>. An explicit <code>height</code>
+is optional: when omitted, the layout engine measures the content's natural
+height at that width and automatically wraps surrounding text around it.
+Multi-paragraph sidebars taller than the remaining column or page height split
+cleanly across column and page boundaries, continuing as active floats while
+surrounding text flows alongside them.</p>
 <h3>Story-Absolute</h3>
 <p>A <code>story-absolute</code> element is pinned at a fixed offset from the story’s own
 origin, independent of the text cursor position.</p>

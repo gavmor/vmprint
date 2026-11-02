@@ -28,9 +28,13 @@ const UPDATE_LAYOUT_SNAPSHOTS =
     process.argv.includes('--update-layout-snapshots') || process.env.VMPRINT_UPDATE_LAYOUT_SNAPSHOTS === '1';
 import { logStep, check, checkAsync, assertNoInputMutation as _assertNoInputMutation } from './harness/test-utils';
 const TEST_PREFIX = 'engine-regression.spec';
+
 const log = (msg: string) => logStep(TEST_PREFIX, msg);
+
 const _check = (desc: string, exp: string, fn: () => void) => check(TEST_PREFIX, desc, exp, fn);
+
 const _checkAsync = (desc: string, exp: string, fn: () => Promise<void>) => checkAsync(TEST_PREFIX, desc, exp, fn);
+
 const assertNoInputMutation = (elements: any[], fixtureName: string) => _assertNoInputMutation(assert, elements, fixtureName);
 
 function flattenBoxText(box: any): string {
@@ -1207,6 +1211,66 @@ function assertBlockFloatsAndColumnSpanSignals(pages: any[], fixtureName: string
         allPostSpanOnOrAfterSpanPage,
         `${fixtureName}: expected all post-span boxes to appear on the same or later page as the span`
     );
+}
+
+function assertNestedSidebarStoryFloatSignals(pages: unknown[], fixtureName: string): void {
+    if (fixtureName !== '79-story-float-nested-sidebar.json') return;
+
+    const allBoxes = (pages as Array<{ boxes?: unknown[] }>).flatMap((page) => Array.isArray(page?.boxes) ? page.boxes : []);
+    const matchesSourceId = (box: unknown, id: string): boolean => {
+        if (!box || typeof box !== 'object') return false;
+        const meta = 'meta' in box && box.meta && typeof box.meta === 'object' ? (box.meta as Record<string, unknown>) : undefined;
+        const sourceId = String(meta?.sourceId || '');
+        return sourceId === id || sourceId.endsWith(`:${id}`);
+    };
+
+    // 1. Nested sidebar elements are emitted with their source IDs intact:
+    assert.ok(allBoxes.some((box) => matchesSourceId(box, 'sidebar-title')), `${fixtureName}: expected sidebar-title box`);
+    assert.ok(allBoxes.some((box) => matchesSourceId(box, 'sidebar-para-1')), `${fixtureName}: expected sidebar-para-1 box`);
+    assert.ok(allBoxes.some((box) => matchesSourceId(box, 'sidebar-para-2')), `${fixtureName}: expected sidebar-para-2 box`);
+    assert.ok(allBoxes.some((box) => matchesSourceId(box, 'sidebar-para-3')), `${fixtureName}: expected sidebar-para-3 box`);
+    assert.ok(allBoxes.some((box) => matchesSourceId(box, 'sidebar-para-4')), `${fixtureName}: expected sidebar-para-4 box`);
+    assert.ok(allBoxes.some((box) => matchesSourceId(box, 'sidebar-para-5')), `${fixtureName}: expected sidebar-para-5 box`);
+
+    // 2. Sidebar boxes are positioned on the right of the column (width ≈ 100):
+    const sidebarBoxes = allBoxes.filter((box) =>
+        matchesSourceId(box, 'sidebar-title') ||
+        matchesSourceId(box, 'sidebar-para-1') ||
+        matchesSourceId(box, 'sidebar-para-2')
+    );
+    for (const sBox of sidebarBoxes) {
+        const boxObj = sBox as { w?: number; x?: number };
+        assert.ok(Math.abs(Number(boxObj.w || 0) - 100) < 5, `${fixtureName}: expected sidebar width ≈ 100, got ${boxObj.w}`);
+    }
+
+    // 3. Body text wraps around the sidebar float (produces narrowed line intervals):
+    const wrappedBoxes = allBoxes.filter((box) => {
+        if (!box || typeof box !== 'object') return false;
+        const props = 'properties' in box && box.properties && typeof box.properties === 'object' ? (box.properties as Record<string, unknown>) : undefined;
+        const lw = props?._lineWidths;
+        if (!Array.isArray(lw) || lw.length < 2) return false;
+        const nums = lw.map((n: unknown) => Number(n)).filter((n: number) => Number.isFinite(n));
+        return (Math.max(...nums) - Math.min(...nums)) > 6;
+    });
+    assert.ok(
+        wrappedBoxes.length > 0,
+        `${fixtureName}: expected at least one text box with narrowed line widths wrapping around sidebar float`
+    );
+
+    // 4. Column-spanning heading clears the float and spans full story width:
+    const spanBoxes = allBoxes.filter((box) => matchesSourceId(box, 'chronicle-span'));
+    assert.ok(spanBoxes.length > 0, `${fixtureName}: expected chronicle-span box`);
+    const spanBox = spanBoxes[0] as { x?: number; y?: number; w?: number };
+    assert.ok(Number(spanBox.w || 0) > 480, `${fixtureName}: expected chronicle-span width > 480 (full story width), got ${spanBox.w}`);
+
+    // All sidebar boxes preceding the span must appear at or above the span:
+    for (const sBox of sidebarBoxes) {
+        const boxObj = sBox as { y?: number; h?: number };
+        assert.ok(
+            Number(boxObj.y || 0) + Number(boxObj.h || 0) <= Number(spanBox.y || 0) + 0.5,
+            `${fixtureName}: expected sidebar content above chronicle-span, got sidebar bottom ${Number(boxObj.y || 0) + Number(boxObj.h || 0)} vs span y ${spanBox.y}`
+        );
+    }
 }
 
 function assertStoryPackagerShowcaseSignals(pages: any[], fixtureName: string): void {
@@ -3454,6 +3518,15 @@ async function run() {
                 'block floats are positioned correctly, text wraps around them, column span is full-width, and post-span content flows in columns',
                 () => {
                     assertBlockFloatsAndColumnSpanSignals(pagesA, fixture.name);
+                }
+            );
+        }
+        if (fixture.name === '79-story-float-nested-sidebar.json') {
+            _check(
+                `${fixture.name} nested sidebar story float signals`,
+                'nested multi-paragraph story float with auto height wraps text, continues across regions without loss, and clears column span',
+                () => {
+                    assertNestedSidebarStoryFloatSignals(pagesA, fixture.name);
                 }
             );
         }

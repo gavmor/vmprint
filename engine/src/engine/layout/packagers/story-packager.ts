@@ -169,6 +169,7 @@ type MultiColumnContinuation = {
     nextChildIndex: number;
     carryOvers: CarryOverObstacle[];
     consumedStoryHeight: number;
+    floatContinuation?: Element | null;
 };
 
 type MultiColumnPourResult = {
@@ -269,7 +270,7 @@ class FrozenStoryPackager implements PackagerUnit {
 // ---------------------------------------------------------------------------
 
 export class StoryPackager implements PackagerUnit {
-    private readonly storyElement: Element;
+    public readonly storyElement: Element;
     private normalizedStory;
     private readonly processor: LayoutProcessor;
     private readonly storyIndex: number;
@@ -292,6 +293,7 @@ export class StoryPackager implements PackagerUnit {
     private lastAvailableWidth: number = -1;
     private lastAvailableHeight: number = -1;
     private lastViewportSnapshot: StoryViewportSnapshot | null = null;
+    private lastLeftMargin: number | null = null;
     private readonly imageMetricsCache = new Map<string, { img: BoxImagePayload; w: number; h: number } | null>();
     private imageMetricsCacheDirty: boolean = true;
 
@@ -348,6 +350,7 @@ export class StoryPackager implements PackagerUnit {
         if (
             this.lastAvailableWidth === availableWidth &&
             this.lastAvailableHeight === availableHeight &&
+            this.lastLeftMargin === context.margins.left &&
             sameViewportSnapshot(this.lastViewportSnapshot, viewportSnapshot) &&
             this.lastResult
         ) {
@@ -362,6 +365,7 @@ export class StoryPackager implements PackagerUnit {
         this.lastAvailableWidth = availableWidth;
         this.lastAvailableHeight = availableHeight;
         this.lastViewportSnapshot = viewportSnapshot;
+        this.lastLeftMargin = context.margins.left;
     }
 
     prepareLookahead(availableWidth: number, _availableHeight: number, context: PackagerContext): void {
@@ -566,7 +570,7 @@ export class StoryPackager implements PackagerUnit {
             : (context.pageWidth - context.margins.left - context.margins.right);
 
         const columnConfig = this.getStoryColumnConfig();
-        const result = this.lastResult ?? (
+        const result = (this.lastResult && this.lastLeftMargin === context.margins.left) ? this.lastResult : (
             columnConfig.columns > 1
                 ? this.pourColumns(availableWidth, availableHeight, context, columnConfig.columns, columnConfig.gutter, columnConfig.balance)
                 : this.pourAll(availableWidth, context)
@@ -638,7 +642,7 @@ export class StoryPackager implements PackagerUnit {
 
             const dims = child.element.image
                 ? resolveImageMetrics(child.element, child.childIndex)
-                : this.measureFloatBox(child.element, availableWidth);
+                : this.measureFloatBox(child.element, availableWidth, child.actor, context);
             if (!dims) continue;
             const localY = layout.y - this.storyYOffset;
             if (localY + dims.h < 0) continue; // wholly before this page's origin
@@ -766,7 +770,7 @@ export class StoryPackager implements PackagerUnit {
                     continue;
                 }
 
-                const dims = this.measureFloatBox(child.element, availableWidth);
+                const dims = this.measureFloatBox(child.element, availableWidth, child.actor, context);
                 if (!dims) continue;
                 if (localY + dims.h < 0) continue; // wholly before this page's origin
                 const pkg = child.actor;
@@ -852,7 +856,7 @@ export class StoryPackager implements PackagerUnit {
 
             // ---- float block (non-image element with layout.mode === 'float') ---
             if (child.kind === 'float-block' && layout) {
-                const dims = this.measureFloatBox(child.element, availableWidth);
+                const dims = this.measureFloatBox(child.element, availableWidth, child.actor, context);
                 if (dims) {
                     cursorY = storyMap.topBottomClearY(cursorY);
 
@@ -1315,6 +1319,7 @@ export class StoryPackager implements PackagerUnit {
         const registeredObstacles: OccupiedRect[] = [];
         const allObstacles: OccupiedRect[] = [];
         const allBoxes: Box[] = [];
+        let pendingFloatContinuation: Element | null = null;
         const maxRegionWidth = Math.max(...regions.map((r) => r.w));
 
         const resolveImageMetrics = (child: NormalizedStoryChild): { img: BoxImagePayload; w: number; h: number } | null => {
@@ -1356,7 +1361,7 @@ export class StoryPackager implements PackagerUnit {
 
             const dims = child.element.image
                 ? resolveImageMetrics(child)
-                : this.measureFloatBox(child.element, maxRegionWidth);
+                : this.measureFloatBox(child.element, maxRegionWidth, child.actor, context);
             if (!dims) continue;
             const localY = layout.y - this.storyYOffset;
             if (localY + dims.h < 0 || localY > resolveRegionStackHeight(regions)) continue;
@@ -1516,7 +1521,7 @@ export class StoryPackager implements PackagerUnit {
                     continue;
                 }
 
-                const dims = this.measureFloatBox(child.element, maxRegionWidth);
+                const dims = this.measureFloatBox(child.element, maxRegionWidth, child.actor, context);
                 if (!dims) continue;
                 if (localY + dims.h < 0 || localY > resolveRegionStackHeight(regions)) continue;
                 const region = regions[projected.regionIndex];
@@ -1679,43 +1684,79 @@ export class StoryPackager implements PackagerUnit {
 
             // ---- float block (non-image element with layout.mode === 'float') ---
             if (child.kind === 'float-block' && layout) {
-                const dims = this.measureFloatBox(child.element, maxRegionWidth);
+                const dims = this.measureFloatBox(child.element, maxRegionWidth, child.actor, context);
                 if (dims) {
-                    while (true) {
+                    let currentFloatPkg: PackagerUnit = child.actor;
+                    let currentFloatElement: Element = child.element;
+                    let currentFloatDims = dims;
+
+                    floatPlacementLoop: while (true) {
                         const region = regions[regionIndex];
                         const regionMap = this.createRegionMap(region, allObstacles);
                         const anchorY = regionMap.topBottomClearY(cursorY);
                         if (anchorY > region.h + 0.1) {
-                            if (goNextRegion()) continue;
+                            if (goNextRegion()) continue floatPlacementLoop;
                             hasOverflow = true;
-                            nextChildIndex = i;
+                            pendingFloatContinuation = currentFloatElement;
+                            nextChildIndex = i + 1;
                             break outer;
                         }
 
                         const align: StoryFloatAlign = layout.align;
-                        const effectiveW = Math.min(dims.w, region.w);
+                        const effectiveW = Math.min(currentFloatDims.w, region.w);
                         const localX = resolveFloatX(align, effectiveW, region.w);
                         const x = region.x + localX;
+                        const availableFloatH = Math.max(0, region.h - anchorY);
 
-                        if (layout.wrap !== 'none') {
-                            for (const obstacle of buildExclusionFieldObstacles({
-                                x,
-                                y: anchorY,
-                                w: effectiveW,
-                                h: dims.h,
-                                wrap: layout.wrap,
-                                gap: layout.gap,
-                                shape: layout.shape,
-                                path: layout.path,
-                                align: layout.align,
-                                exclusionAssembly: layout.exclusionAssembly
-                            })) {
-                                allObstacles.push(obstacle);
-                                registeredObstacles.push(obstacle);
+                        if (currentFloatDims.h <= availableFloatH + 0.1) {
+                            if (layout.wrap !== 'none') {
+                                for (const obstacle of buildExclusionFieldObstacles({
+                                    x,
+                                    y: anchorY,
+                                    w: effectiveW,
+                                    h: currentFloatDims.h,
+                                    wrap: layout.wrap,
+                                    gap: layout.gap,
+                                    shape: layout.shape,
+                                    path: layout.path,
+                                    align: layout.align,
+                                    exclusionAssembly: layout.exclusionAssembly
+                                })) {
+                                    allObstacles.push(obstacle);
+                                    registeredObstacles.push(obstacle);
+                                }
                             }
+
+                            const regionStartY = resolveRegionStartY(regions, region.index);
+                            const floatContext: PackagerContext = {
+                                ...this.createLocalFrameContext(
+                                    context,
+                                    effectiveW,
+                                    {
+                                        cursorY: anchorY,
+                                        margins: { ...margins, left: margins.left + x },
+                                        pageHeight: Number.POSITIVE_INFINITY
+                                    },
+                                    regionStartY + anchorY,
+                                    currentFloatDims.h
+                                )
+                            };
+                            currentFloatPkg.prepare(effectiveW, currentFloatDims.h, floatContext);
+                            const emitted = (currentFloatPkg.emitBoxes(effectiveW, currentFloatDims.h, floatContext) || []) as Box[];
+                            for (const b of emitted) b.y = (b.y || 0) + anchorY;
+                            for (const b of emitted) allBoxes.push(b);
+                            cursorY = anchorY; // float block does NOT advance cursorY
+                            break floatPlacementLoop;
                         }
 
-                        const pkg = child.actor;
+                        if (anchorY > 0.1 && currentFloatDims.h <= region.h + 0.1) {
+                            if (goNextRegion()) continue floatPlacementLoop;
+                            hasOverflow = true;
+                            pendingFloatContinuation = currentFloatElement;
+                            nextChildIndex = i + 1;
+                            break outer;
+                        }
+
                         const regionStartY = resolveRegionStartY(regions, region.index);
                         const floatContext: PackagerContext = {
                             ...this.createLocalFrameContext(
@@ -1724,22 +1765,152 @@ export class StoryPackager implements PackagerUnit {
                                 {
                                     cursorY: anchorY,
                                     margins: { ...margins, left: margins.left + x },
-                                    pageHeight: Number.POSITIVE_INFINITY
+                                    pageHeight: availableFloatH
                                 },
                                 regionStartY + anchorY,
-                                dims.h
+                                availableFloatH
                             )
                         };
-                        pkg.prepare(effectiveW, dims.h, floatContext);
-                        const emitted = (pkg.emitBoxes(effectiveW, dims.h, floatContext) || []) as Box[];
-                        for (const b of emitted) b.y = (b.y || 0) + anchorY;
-                        for (const b of emitted) allBoxes.push(b);
-                        cursorY = anchorY; // float block does NOT advance cursorY
-                        break;
+
+                        const split = currentFloatPkg.reshape(availableFloatH, floatContext);
+                        if (split.currentFragment && split.continuationFragment) {
+                            const fragmentH = split.currentFragment.getRequiredHeight();
+                            if (layout.wrap !== 'none') {
+                                for (const obstacle of buildExclusionFieldObstacles({
+                                    x,
+                                    y: anchorY,
+                                    w: effectiveW,
+                                    h: fragmentH,
+                                    wrap: layout.wrap,
+                                    gap: layout.gap,
+                                    shape: layout.shape,
+                                    path: layout.path,
+                                    align: layout.align,
+                                    exclusionAssembly: layout.exclusionAssembly
+                                })) {
+                                    allObstacles.push(obstacle);
+                                    registeredObstacles.push(obstacle);
+                                }
+                            }
+
+                            const emitted = (split.currentFragment.emitBoxes(effectiveW, availableFloatH, floatContext) || []) as Box[];
+                            for (const b of emitted) b.y = (b.y || 0) + anchorY;
+                            for (const b of emitted) allBoxes.push(b);
+                            cursorY = anchorY;
+
+                            let remPkg: PackagerUnit | null = split.continuationFragment;
+                            let remElem: Element | null = extractContinuationElement(split.continuationFragment, currentFloatElement);
+
+                            for (let cIdx = regionIndex + 1; cIdx < regions.length; cIdx++) {
+                                if (!remPkg || !remElem) break;
+                                const nextRegion = regions[cIdx];
+                                const nextLocalX = resolveFloatX(align, effectiveW, nextRegion.w);
+                                const nextX = nextRegion.x + nextLocalX;
+                                const nextAnchorY = columnFloorY;
+                                const nextAvailableH = Math.max(0, nextRegion.h - nextAnchorY);
+                                const nextDims = this.measureFloatBox(remElem, maxRegionWidth, remPkg, context);
+                                if (!nextDims) break;
+
+                                if (nextDims.h <= nextAvailableH + 0.1) {
+                                    if (layout.wrap !== 'none') {
+                                        for (const obstacle of buildExclusionFieldObstacles({
+                                            x: nextX,
+                                            y: nextAnchorY,
+                                            w: effectiveW,
+                                            h: nextDims.h,
+                                            wrap: layout.wrap,
+                                            gap: layout.gap,
+                                            shape: layout.shape,
+                                            path: layout.path,
+                                            align: layout.align,
+                                            exclusionAssembly: layout.exclusionAssembly
+                                        })) {
+                                            allObstacles.push(obstacle);
+                                            registeredObstacles.push(obstacle);
+                                        }
+                                    }
+                                    const nextRegionStartY = resolveRegionStartY(regions, nextRegion.index);
+                                    const nextFloatCtx: PackagerContext = {
+                                        ...this.createLocalFrameContext(
+                                            context,
+                                            effectiveW,
+                                            {
+                                                cursorY: nextAnchorY,
+                                                margins: { ...margins, left: margins.left + nextX },
+                                                pageHeight: Number.POSITIVE_INFINITY
+                                            },
+                                            nextRegionStartY + nextAnchorY,
+                                            nextDims.h
+                                        )
+                                    };
+                                    remPkg.prepare(effectiveW, nextDims.h, nextFloatCtx);
+                                    const nextEmitted = (remPkg.emitBoxes(effectiveW, nextDims.h, nextFloatCtx) || []) as Box[];
+                                    for (const b of nextEmitted) b.y = (b.y || 0) + nextAnchorY;
+                                    for (const b of nextEmitted) allBoxes.push(b);
+                                    remPkg = null;
+                                    remElem = null;
+                                    break;
+                                } else {
+                                    const nextRegionStartY = resolveRegionStartY(regions, nextRegion.index);
+                                    const nextFloatCtx: PackagerContext = {
+                                        ...this.createLocalFrameContext(
+                                            context,
+                                            effectiveW,
+                                            {
+                                                cursorY: nextAnchorY,
+                                                margins: { ...margins, left: margins.left + nextX },
+                                                pageHeight: nextAvailableH
+                                            },
+                                            nextRegionStartY + nextAnchorY,
+                                            nextAvailableH
+                                        )
+                                    };
+                                    const splitNext = remPkg.reshape(nextAvailableH, nextFloatCtx);
+                                    if (splitNext.currentFragment && splitNext.continuationFragment) {
+                                        const nextFragH = splitNext.currentFragment.getRequiredHeight();
+                                        if (layout.wrap !== 'none') {
+                                            for (const obstacle of buildExclusionFieldObstacles({
+                                                x: nextX,
+                                                y: nextAnchorY,
+                                                w: effectiveW,
+                                                h: nextFragH,
+                                                wrap: layout.wrap,
+                                                gap: layout.gap,
+                                                shape: layout.shape,
+                                                path: layout.path,
+                                                align: layout.align,
+                                                exclusionAssembly: layout.exclusionAssembly
+                                            })) {
+                                                allObstacles.push(obstacle);
+                                                registeredObstacles.push(obstacle);
+                                            }
+                                        }
+                                        const nextEmitted = (splitNext.currentFragment.emitBoxes(effectiveW, nextAvailableH, nextFloatCtx) || []) as Box[];
+                                        for (const b of nextEmitted) b.y = (b.y || 0) + nextAnchorY;
+                                        for (const b of nextEmitted) allBoxes.push(b);
+                                        remElem = extractContinuationElement(splitNext.continuationFragment, remElem);
+                                        remPkg = splitNext.continuationFragment;
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (remElem) {
+                                pendingFloatContinuation = remElem;
+                                hasOverflow = true;
+                            }
+                            break floatPlacementLoop;
+                        }
+
+                        if (goNextRegion()) continue floatPlacementLoop;
+                        hasOverflow = true;
+                        pendingFloatContinuation = currentFloatElement;
+                        nextChildIndex = i + 1;
+                        break outer;
                     }
                     continue;
                 }
-                // dims is null (missing style.width/height) → fall through to FlowBoxPackager path
             }
 
             if (child.kind === 'block-image') {
@@ -1861,6 +2032,12 @@ export class StoryPackager implements PackagerUnit {
         }
         occupiedHeight = Math.min(Math.max(0, occupiedHeight), availableHeight);
 
+        if (pendingFloatContinuation) {
+            hasOverflow = true;
+            if (nextChildIndex >= children.length) {
+                nextChildIndex = children.length;
+            }
+        }
         const carryOvers = hasOverflow
             ? buildCarryOverObstacles(registeredObstacles, availableHeight)
             : [];
@@ -1871,7 +2048,8 @@ export class StoryPackager implements PackagerUnit {
                 continuationPackager,
                 nextChildIndex,
                 carryOvers,
-                consumedStoryHeight: resolveRegionStackHeight(regions)
+                consumedStoryHeight: resolveRegionStackHeight(regions),
+                floatContinuation: pendingFloatContinuation
             }
             : null;
 
@@ -1939,7 +2117,8 @@ export class StoryPackager implements PackagerUnit {
         const partBChildren = buildStoryContinuationChildren(
             children,
             result.continuation.nextChildIndex,
-            result.continuation.continuationElement
+            result.continuation.continuationElement,
+            result.continuation.floatContinuation
         );
         if (
             partBChildren.length === 0
@@ -1981,6 +2160,8 @@ export class StoryPackager implements PackagerUnit {
         let partBStartChildIdx = children.length; // default: all in partA
         let partBContinuationElement: Element | null = null;
         let partBContinuationPackager: PackagerUnit | null = null;
+        let partBFloatContinuationElement: Element | null = null;
+        let splitFloatObstacle: { x: number; y: number } | null = null;
         const carryOverVisuals: CarryOverVisual[] = [];
 
         const recordPartAHeight = (candidateBottom: number): void => {
@@ -2084,17 +2265,21 @@ export class StoryPackager implements PackagerUnit {
                             }
                             const fragmentHeight = split.currentFragment.getRequiredHeight();
                             recordPartAHeight(elem.topY + fragmentHeight);
-                            partBContinuationPackager = split.continuationFragment;
-                            partBStartChildIdx = elem.childIndex >= 0 ? elem.childIndex + 1 : 0;
-                            break;
+                            partBFloatContinuationElement = extractContinuationElement(split.continuationFragment, children[elem.childIndex]);
+                            splitFloatObstacle = {
+                                x: Number(elem.marginLeft ?? margins.left) - margins.left,
+                                y: elem.topY
+                            };
+                            continue;
                         }
                     }
 
-                    if (partABoxes.length === 0) {
-                        return { currentFragment: null, continuationFragment: this };
-                    }
-                    partBStartChildIdx = elem.childIndex >= 0 ? elem.childIndex : 0;
-                    break;
+                    partBFloatContinuationElement = children[elem.childIndex];
+                    splitFloatObstacle = {
+                        x: Number(elem.marginLeft ?? margins.left) - margins.left,
+                        y: elem.topY
+                    };
+                    continue;
                 }
                 // Floats are included in partA if the anchor is within the split zone.
                 if (elem.topY <= splitH) {
@@ -2170,7 +2355,13 @@ export class StoryPackager implements PackagerUnit {
         }
 
         // -- Carry-over obstacles -------------------------------------------
-        const carryOvers = buildCarryOverObstacles(result.registeredObstacles, splitH);
+        const filteredObstacles = splitFloatObstacle
+            ? result.registeredObstacles.filter((obs) => !(
+                Math.abs(obs.x - splitFloatObstacle!.x) < 0.5
+                && Math.abs(obs.y - splitFloatObstacle!.y) < 0.5
+            ))
+            : result.registeredObstacles;
+        const carryOvers = buildCarryOverObstacles(filteredObstacles, splitH);
 
         // -- partA (frozen) -------------------------------------------------
         const partA = new FrozenStoryPackager(partABoxes, partAHeight, this, availableWidth);
@@ -2179,7 +2370,8 @@ export class StoryPackager implements PackagerUnit {
         const partBChildren = buildStoryContinuationChildren(
             children,
             partBStartChildIdx,
-            partBContinuationElement
+            partBContinuationElement,
+            partBFloatContinuationElement
         );
 
         // Also re-include any story-absolute images that appear after splitH
@@ -2257,22 +2449,41 @@ export class StoryPackager implements PackagerUnit {
     }
 
     /**
-     * Resolves explicit dimensions for a non-image float block.
-     * Both `style.width` and `style.height` must be present and positive.
-     * Returns null if either is missing or invalid — the element falls through
-     * to normal block layout instead.
+     * Resolves dimensions for a non-image float block.
+     * `style.width` must be present and positive. When `style.height` is omitted,
+     * the packager is measured at that width in an unbounded local frame.
+     * Returns null if width is missing or content cannot be measured.
      */
     private measureFloatBox(
         element: Element,
-        availableWidth: number
+        availableWidth: number,
+        actor?: PackagerUnit,
+        context?: PackagerContext
     ): { w: number; h: number } | null {
         const style = (element.properties?.style || {}) as ElementStyle;
-        if (style.width === undefined || style.height === undefined) return null;
-        const w = Math.max(0, LayoutUtils.validateUnit(style.width));
-        const h = Math.max(0, LayoutUtils.validateUnit(style.height));
-        if (!Number.isFinite(w) || w <= 0) return null;
+        if (style.width === undefined) return null;
+        const width = Math.max(0, LayoutUtils.validateUnit(style.width));
+        if (!Number.isFinite(width) || width <= 0) return null;
+        const w = Math.min(width, availableWidth);
+        if (w <= 0) return null;
+        let h: number;
+        if (style.height !== undefined) {
+            h = Math.max(0, LayoutUtils.validateUnit(style.height));
+        } else if (actor && context) {
+            const measureContext = this.createLocalFrameContext(
+                context,
+                w,
+                { cursorY: 0, margins: { ...context.margins }, pageHeight: Number.POSITIVE_INFINITY },
+                0,
+                Number.POSITIVE_INFINITY
+            );
+            actor.prepare(w, Number.POSITIVE_INFINITY, measureContext);
+            h = actor.getRequiredHeight();
+        } else {
+            return null;
+        }
         if (!Number.isFinite(h) || h <= 0) return null;
-        return { w: Math.min(w, availableWidth), h };
+        return { w, h };
     }
 
     private buildImageBox(
@@ -2600,10 +2811,35 @@ function cloneStoryContinuationChild(child: Element, originalChildIndex: number)
     };
 }
 
+function extractContinuationElement(pkg: PackagerUnit, originalElement: Element): Element {
+    const candidate = pkg as unknown as {
+        storyElement?: Element;
+        sourceElement?: Element;
+        flowBox?: { _sourceElement?: Element };
+        element?: Element;
+    };
+    const fromStory = candidate.storyElement;
+    if (fromStory && typeof fromStory === 'object') {
+        return {
+            ...fromStory,
+            placement: originalElement.placement ?? fromStory.placement
+        };
+    }
+    const fromSource = candidate.sourceElement ?? candidate.flowBox?._sourceElement ?? candidate.element;
+    if (fromSource && typeof fromSource === 'object') {
+        return {
+            ...fromSource,
+            placement: originalElement.placement ?? fromSource.placement
+        };
+    }
+    return originalElement;
+}
+
 function buildStoryContinuationChildren(
     children: Element[],
     cutoffChildIndex: number,
-    continuationElement: Element | null
+    continuationElement: Element | null,
+    floatContinuationElement?: Element | null
 ): Element[] {
     const result: Element[] = [];
     for (let i = 0; i < Math.min(children.length, Math.max(0, cutoffChildIndex)); i++) {
@@ -2611,6 +2847,9 @@ function buildStoryContinuationChildren(
         const layout = child.placement as StoryLayoutDirective | undefined;
         if (layout?.mode !== 'story-absolute') continue;
         result.push(cloneStoryContinuationChild(child, i));
+    }
+    if (floatContinuationElement) {
+        result.push(cloneStoryContinuationChild(floatContinuationElement, 0));
     }
     if (continuationElement) {
         result.push(cloneStoryContinuationChild(continuationElement, Math.max(0, cutoffChildIndex - 1)));

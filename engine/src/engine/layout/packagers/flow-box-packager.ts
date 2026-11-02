@@ -70,6 +70,7 @@ export class FlowBoxPackager implements PackagerUnit {
 
     get pageBreakBefore(): boolean | undefined { return this.flowBox.pageBreakBefore; }
     get keepWithNext(): boolean | undefined { return this.flowBox.keepWithNext; }
+    get sourceElement(): Element | undefined { return this.flowBox._sourceElement; }
 
     constructor(processor: LayoutProcessor, flowBox: FlowBox, identity?: PackagerIdentity) {
         this.processor = processor;
