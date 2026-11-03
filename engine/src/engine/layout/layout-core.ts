@@ -608,7 +608,7 @@ export class LayoutProcessor extends TextProcessor {
             const renderedChar = renderedText[renderedIndex];
             const sourceChar = sourceText[sourceIndex];
 
-            if (renderedChar === sourceChar || renderedChar.toUpperCase() === sourceChar.toUpperCase()) {
+            if (renderedChar === sourceChar) {
                 renderedIndex += 1;
                 sourceIndex += 1;
                 continue;
@@ -630,6 +630,13 @@ export class LayoutProcessor extends TextProcessor {
             if (/\s/.test(renderedChar) && /\s/.test(sourceChar)) {
                 while (renderedIndex < renderedText.length && /\s/.test(renderedText[renderedIndex])) renderedIndex += 1;
                 while (sourceIndex < sourceText.length && /\s/.test(sourceText[sourceIndex])) sourceIndex += 1;
+                continue;
+            }
+
+            // Text transforms (small caps) render a different case than the source.
+            if (renderedChar.toUpperCase() === sourceChar.toUpperCase()) {
+                renderedIndex += 1;
+                sourceIndex += 1;
                 continue;
             }
 

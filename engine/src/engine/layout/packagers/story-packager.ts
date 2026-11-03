@@ -137,6 +137,8 @@ type PlacedImageElement = {
 
 type PlacedFloatBlock = {
     kind: 'float-block';
+    /** True for placement floats; false for opaque flow actors (lists, tables) that split like text. */
+    isFloat?: boolean;
     childIndex: number;
     allBoxes: Box[];
     topY: number;
@@ -901,6 +903,7 @@ export class StoryPackager implements PackagerUnit {
                     for (const b of emitted) allBoxes.push(b);
                     placedElements.push({
                         kind: 'float-block',
+                        isFloat: true,
                         childIndex: child.childIndex,
                         allBoxes: emitted,
                         topY: cursorY,
@@ -1702,10 +1705,14 @@ export class StoryPackager implements PackagerUnit {
                             break outer;
                         }
 
-                        const align: StoryFloatAlign = layout.align;
-                        const effectiveW = Math.min(currentFloatDims.w, region.w);
-                        const localX = resolveFloatX(align, effectiveW, region.w);
-                        const x = region.x + localX;
+                        const edge = layout.align === 'outer';
+                        // Outer floats pin to the story edge beside the page's outer margin,
+                        // whichever column the cursor is in. Recto pages (even index) are right-bound.
+                        const align: StoryFloatAlign = edge ? (context.pageIndex % 2 === 0 ? 'right' : 'left') : layout.align;
+                        const frameW = edge ? availableWidth : region.w;
+                        const effectiveW = Math.min(currentFloatDims.w, frameW);
+                        const localX = resolveFloatX(align, effectiveW, frameW);
+                        const x = edge ? localX : region.x + localX;
                         const availableFloatH = Math.max(0, region.h - anchorY);
 
                         if (currentFloatDims.h <= availableFloatH + 0.1) {
@@ -1719,7 +1726,7 @@ export class StoryPackager implements PackagerUnit {
                                     gap: layout.gap,
                                     shape: layout.shape,
                                     path: layout.path,
-                                    align: layout.align,
+                                    align,
                                     exclusionAssembly: layout.exclusionAssembly
                                 })) {
                                     allObstacles.push(obstacle);
@@ -1744,6 +1751,7 @@ export class StoryPackager implements PackagerUnit {
                             currentFloatPkg.prepare(effectiveW, currentFloatDims.h, floatContext);
                             const emitted = (currentFloatPkg.emitBoxes(effectiveW, currentFloatDims.h, floatContext) || []) as Box[];
                             for (const b of emitted) b.y = (b.y || 0) + anchorY;
+                            bleedBoxes(emitted, align, edge ? layout.bleed : 0);
                             for (const b of emitted) allBoxes.push(b);
                             cursorY = anchorY; // float block does NOT advance cursorY
                             break floatPlacementLoop;
@@ -1785,7 +1793,7 @@ export class StoryPackager implements PackagerUnit {
                                     gap: layout.gap,
                                     shape: layout.shape,
                                     path: layout.path,
-                                    align: layout.align,
+                                    align,
                                     exclusionAssembly: layout.exclusionAssembly
                                 })) {
                                     allObstacles.push(obstacle);
@@ -1795,6 +1803,7 @@ export class StoryPackager implements PackagerUnit {
 
                             const emitted = (split.currentFragment.emitBoxes(effectiveW, availableFloatH, floatContext) || []) as Box[];
                             for (const b of emitted) b.y = (b.y || 0) + anchorY;
+                            bleedBoxes(emitted, align, edge ? layout.bleed : 0);
                             for (const b of emitted) allBoxes.push(b);
                             cursorY = anchorY;
 
@@ -1802,10 +1811,11 @@ export class StoryPackager implements PackagerUnit {
                             let remElem: Element | null = extractContinuationElement(split.continuationFragment, currentFloatElement);
 
                             for (let cIdx = regionIndex + 1; cIdx < regions.length; cIdx++) {
-                                if (!remPkg || !remElem) break;
+                                // An outer float occupies the same edge in every column; its remainder belongs on the next page.
+                                if (!remPkg || !remElem || edge) break;
                                 const nextRegion = regions[cIdx];
-                                const nextLocalX = resolveFloatX(align, effectiveW, nextRegion.w);
-                                const nextX = nextRegion.x + nextLocalX;
+                                const nextLocalX = resolveFloatX(align, effectiveW, frameW);
+                                const nextX = edge ? nextLocalX : nextRegion.x + nextLocalX;
                                 const nextAnchorY = columnFloorY;
                                 const nextAvailableH = Math.max(0, nextRegion.h - nextAnchorY);
                                 const nextDims = this.measureFloatBox(remElem, maxRegionWidth, remPkg, context);
@@ -1822,7 +1832,7 @@ export class StoryPackager implements PackagerUnit {
                                             gap: layout.gap,
                                             shape: layout.shape,
                                             path: layout.path,
-                                            align: layout.align,
+                                            align,
                                             exclusionAssembly: layout.exclusionAssembly
                                         })) {
                                             allObstacles.push(obstacle);
@@ -1846,6 +1856,7 @@ export class StoryPackager implements PackagerUnit {
                                     remPkg.prepare(effectiveW, nextDims.h, nextFloatCtx);
                                     const nextEmitted = (remPkg.emitBoxes(effectiveW, nextDims.h, nextFloatCtx) || []) as Box[];
                                     for (const b of nextEmitted) b.y = (b.y || 0) + nextAnchorY;
+                                    bleedBoxes(nextEmitted, align, edge ? layout.bleed : 0);
                                     for (const b of nextEmitted) allBoxes.push(b);
                                     remPkg = null;
                                     remElem = null;
@@ -1878,7 +1889,7 @@ export class StoryPackager implements PackagerUnit {
                                                 gap: layout.gap,
                                                 shape: layout.shape,
                                                 path: layout.path,
-                                                align: layout.align,
+                                                align,
                                                 exclusionAssembly: layout.exclusionAssembly
                                             })) {
                                                 allObstacles.push(obstacle);
@@ -1887,7 +1898,8 @@ export class StoryPackager implements PackagerUnit {
                                         }
                                         const nextEmitted = (splitNext.currentFragment.emitBoxes(effectiveW, nextAvailableH, nextFloatCtx) || []) as Box[];
                                         for (const b of nextEmitted) b.y = (b.y || 0) + nextAnchorY;
-                                        for (const b of nextEmitted) allBoxes.push(b);
+                                        bleedBoxes(nextEmitted, align, edge ? layout.bleed : 0);
+                                    for (const b of nextEmitted) allBoxes.push(b);
                                         remElem = extractContinuationElement(splitNext.continuationFragment, remElem);
                                         remPkg = splitNext.continuationFragment;
                                     } else {
@@ -2265,21 +2277,33 @@ export class StoryPackager implements PackagerUnit {
                             }
                             const fragmentHeight = split.currentFragment.getRequiredHeight();
                             recordPartAHeight(elem.topY + fragmentHeight);
-                            partBFloatContinuationElement = extractContinuationElement(split.continuationFragment, children[elem.childIndex]);
-                            splitFloatObstacle = {
-                                x: Number(elem.marginLeft ?? margins.left) - margins.left,
-                                y: elem.topY
-                            };
-                            continue;
+                            if (elem.isFloat) {
+                                partBFloatContinuationElement = extractContinuationElement(split.continuationFragment, children[elem.childIndex]);
+                                splitFloatObstacle = {
+                                    x: Number(elem.marginLeft ?? margins.left) - margins.left,
+                                    y: elem.topY
+                                };
+                                continue;
+                            }
+                            partBContinuationPackager = split.continuationFragment;
+                            partBStartChildIdx = elem.childIndex >= 0 ? elem.childIndex + 1 : 0;
+                            break;
                         }
                     }
 
-                    partBFloatContinuationElement = children[elem.childIndex];
-                    splitFloatObstacle = {
-                        x: Number(elem.marginLeft ?? margins.left) - margins.left,
-                        y: elem.topY
-                    };
-                    continue;
+                    if (elem.isFloat) {
+                        partBFloatContinuationElement = children[elem.childIndex];
+                        splitFloatObstacle = {
+                            x: Number(elem.marginLeft ?? margins.left) - margins.left,
+                            y: elem.topY
+                        };
+                        continue;
+                    }
+                    if (partABoxes.length === 0) {
+                        return { currentFragment: null, continuationFragment: this };
+                    }
+                    partBStartChildIdx = elem.childIndex >= 0 ? elem.childIndex : 0;
+                    break;
                 }
                 // Floats are included in partA if the anchor is within the split zone.
                 if (elem.topY <= splitH) {
@@ -2732,6 +2756,17 @@ export class StoryPackager implements PackagerUnit {
 function isColumnSpanElement(element: Element): boolean {
     const span = element.columnSpan;
     return span === 'all' || (typeof span === 'number' && span > 1);
+}
+
+/** Extends boxes outward past the story edge, keeping their text where it was. */
+function bleedBoxes(boxes: Box[], side: StoryFloatAlign, bleed: number): void {
+    if (!bleed || (side !== 'left' && side !== 'right')) return;
+    const pad = side === 'left' ? 'paddingLeft' : 'paddingRight';
+    for (const b of boxes) {
+        if (side === 'left') b.x = Number(b.x || 0) - bleed;
+        b.w = Number(b.w || 0) + bleed;
+        b.style = { ...(b.style || {}), [pad]: Number((b.style as any)?.[pad] || 0) + bleed };
+    }
 }
 
 function resolveFloatX(

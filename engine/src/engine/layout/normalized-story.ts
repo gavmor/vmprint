@@ -22,6 +22,7 @@ export interface NormalizedStoryLayout {
     align: StoryFloatAlign;
     wrap: StoryWrapMode;
     gap: number;
+    bleed: number;
     shape: StoryFloatShape;
     exclusionAssembly?: {
         members: StoryExclusionAssemblyMember[];
@@ -67,6 +68,7 @@ function normalizeLayout(layout?: StoryLayoutDirective): NormalizedStoryLayout |
         align: (layout.align ?? 'left') as StoryFloatAlign,
         wrap: (layout.wrap ?? 'around') as StoryWrapMode,
         gap: Math.max(0, Number(layout.gap ?? 0)),
+        bleed: Math.max(0, Number(layout.bleed ?? 0)),
         shape: (layout.shape ?? 'rect') as StoryFloatShape,
         ...(typeof layout.path === 'string' && layout.path.trim()
             ? { path: layout.path.trim() }

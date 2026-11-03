@@ -427,7 +427,8 @@ export type TraversalInteractionPolicy = 'auto' | 'wrap' | 'overpass' | 'ignore'
 export type MicroLanePolicy = 'allow' | 'balanced' | 'typography';
 
 /** Which margin a float anchors to. */
-export type StoryFloatAlign = 'left' | 'right' | 'center';
+/** `outer` pins a float to the story edge nearest the page's outer edge, across columns. */
+export type StoryFloatAlign = 'left' | 'right' | 'center' | 'outer';
 
 /**
  * The exclusion-zone shape used for text wrapping:
@@ -521,6 +522,8 @@ export interface StoryLayoutDirective {
     /** How text interacts with this obstacle (default 'around'). */
     wrap?: StoryWrapMode;
     /** Extra whitespace clearance around the obstacle bounding box (points). */
+    /** Points the float's box extends outward past the story edge (only with `align: 'outer'`). */
+    bleed?: number;
     gap?: number;
     /** Exclusion-zone shape for text wrapping (default 'rect'). */
     shape?: StoryFloatShape;

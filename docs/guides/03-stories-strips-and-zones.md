@@ -83,6 +83,10 @@ text stream flows around it.
 | `"top-bottom"` | Text clears the obstacle entirely — no side-by-side text |
 | `"none"` | Element overlays the text with no reflow |
 
+`align: "outer"` pins the float to the story edge nearest the page's outer margin
+(right on even page indexes, left on odd) regardless of column; `bleed` (points) extends the
+float's boxes outward past that edge, for shaded margin sidebars.
+
 `gap` adds clearance around the obstacle bounding box (in points).
 
 `shape` defaults to `"rect"`, but floats and `story-absolute` actors can also

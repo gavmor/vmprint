@@ -1,0 +1,853 @@
+[
+  {
+    "index": 0,
+    "width": 612,
+    "height": 792,
+    "boxes": [
+      {
+        "type": "kicker",
+        "x": 50,
+        "y": 50,
+        "w": 512,
+        "h": 10.620312,
+        "lines": [
+          [
+            {
+              "text": "L",
+              "width": 5.393066,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "A",
+              "width": 6.168945,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "Y",
+              "width": 6.168945,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "O",
+              "width": 6.944824,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "U",
+              "width": 6.555176,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "T",
+              "width": 5.775879,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": " ",
+              "width": 3.444824,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "E",
+              "width": 6.168945,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "N",
+              "width": 6.555176,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "G",
+              "width": 6.944824,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "I",
+              "width": 3.444824,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "N",
+              "width": 6.555176,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "E",
+              "width": 6.168945,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": " ",
+              "width": 3.444824,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "·",
+              "width": 3.831055,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": " ",
+              "width": 3.444824,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "S",
+              "width": 6.168945,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "T",
+              "width": 5.775879,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "O",
+              "width": 6.944824,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "R",
+              "width": 6.555176,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "Y",
+              "width": 6.168945,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": " ",
+              "width": 3.444824,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "F",
+              "width": 5.775879,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "L",
+              "width": 5.393066,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "O",
+              "width": 6.944824,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "A",
+              "width": 6.168945,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "T",
+              "width": 5.775879,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": " ",
+              "width": 3.444824,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "R",
+              "width": 6.555176,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "E",
+              "width": 6.168945,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "G",
+              "width": 6.944824,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "R",
+              "width": 6.555176,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "E",
+              "width": 6.168945,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "S",
+              "width": 6.168945,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "S",
+              "width": 6.168945,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "I",
+              "width": 3.444824,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "O",
+              "width": 6.944824,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            },
+            {
+              "text": "N",
+              "width": 5.055176,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ]
+        ]
+      },
+      {
+        "type": "heading",
+        "x": 50,
+        "y": 68.620312,
+        "w": 512,
+        "h": 60.6875,
+        "lines": [
+          [
+            {
+              "text": "Nested Multi-Paragraph Story Float with Automatic ",
+              "width": 488.935547,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "Height",
+              "width": 62.216797,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ]
+        ]
+      },
+      {
+        "type": "body",
+        "x": 50,
+        "y": 141.307813,
+        "w": 248,
+        "h": 71.171875,
+        "lines": [
+          [
+            {
+              "text": "This story demonstrates native block and story float ",
+              "width": 230.65918,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "support with authored width and automatic content ",
+              "width": 226.25,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "height measurement. Body prose flows continuously ",
+              "width": 234.013672,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "through multi-column regions while floating sidebar ",
+              "width": 227.895508,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "content occupies an anchored side lane.",
+              "width": 179.013672,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ]
+        ]
+      },
+      {
+        "type": "sidebar-title",
+        "x": 462,
+        "y": 222.479688,
+        "w": 120,
+        "h": 12.896094,
+        "lines": [
+          [
+            {
+              "text": "A BRIEF TIMELINE",
+              "width": 76.026855,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ]
+        ]
+      },
+      {
+        "type": "sidebar-para",
+        "x": 462,
+        "y": 239.375781,
+        "w": 120,
+        "h": 30.128906,
+        "lines": [
+          [
+            {
+              "text": "Kingdom (753–509 BCE): ",
+              "width": 87.550049,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "Early kings and legendary ",
+              "width": 88.38501,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "origins of the city.",
+              "width": 57.802734,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ]
+        ]
+      },
+      {
+        "type": "sidebar-para",
+        "x": 462,
+        "y": 273.504688,
+        "w": 120,
+        "h": 39.878906,
+        "lines": [
+          [
+            {
+              "text": "Republic (509–27 BCE): ",
+              "width": 82.961426,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "Magistrates, Senate, ",
+              "width": 70.869141,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "territorial expansion, and civil ",
+              "width": 98.796387,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "strife.",
+              "width": 18.336182,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ]
+        ]
+      },
+      {
+        "type": "sidebar-para",
+        "x": 462,
+        "y": 317.383594,
+        "w": 120,
+        "h": 39.878906,
+        "lines": [
+          [
+            {
+              "text": "Principate (27 BCE–later third",
+              "width": 99.213867,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "century): Imperial rule begins ",
+              "width": 98.792725,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "under Augustus with ",
+              "width": 70.041504,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "continued Republican forms.",
+              "width": 95.053711,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ]
+        ]
+      },
+      {
+        "type": "sidebar-para",
+        "x": 462,
+        "y": 361.2625,
+        "w": 120,
+        "h": 39.878906,
+        "lines": [
+          [
+            {
+              "text": "High Empire (about 100–120 ",
+              "width": 97.979736,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "CE): The reigns of Trajan and",
+              "width": 98.518066,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "Hadrian mark stability and ",
+              "width": 88.787842,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "maximum territorial reach.",
+              "width": 86.685791,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ]
+        ]
+      },
+      {
+        "type": "sidebar-para",
+        "x": 462,
+        "y": 405.141406,
+        "w": 120,
+        "h": 39.878906,
+        "lines": [
+          [
+            {
+              "text": "Later Empire: Administrative ",
+              "width": 96.28418,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "partition under Diocletian and ",
+              "width": 99.645996,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "transition toward the medieval",
+              "width": 99.63501,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "Byzantine world.",
+              "width": 55.026855,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ]
+        ]
+      },
+      {
+        "type": "body",
+        "x": 50,
+        "y": 222.479688,
+        "w": 248,
+        "h": 99.171875,
+        "lines": [
+          [
+            {
+              "text": "The surrounding body copy flows around the floating ",
+              "width": 235.146484,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "multi-paragraph sidebar note. The per-line obstacle ",
+              "width": 229.570313,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "resolver subtracts the obstacle width from lines that ",
+              "width": 230.102539,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "coincide vertically with the sidebar, narrowing body text ",
+              "width": 246.235352,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "intervals while the sidebar continues down the right ",
+              "width": 229.018555,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "edge of the column. Once the sidebar ends, the full ",
+              "width": 229.033203,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "column width is cleanly restored.",
+              "width": 144.506836,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ]
+        ]
+      },
+      {
+        "type": "body",
+        "x": 50,
+        "y": 331.651563,
+        "w": 248,
+        "h": 85.171875,
+        "lines": [
+          [
+            {
+              "text": "A second paragraph confirms that text flowing ",
+              "width": 205.664063,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "alongside the float maintains correct justification and ",
+              "width": 234.575195,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "margin boundaries. When content crosses between ",
+              "width": 230.683594,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "column regions, the engine preserves runaround ",
+              "width": 217.910156,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "geometry and ensures neither float boxes nor body ",
+              "width": 228.47168,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "lines overlap or leak into adjacent regions.",
+              "width": 186.777344,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ]
+        ]
+      },
+      {
+        "type": "section-break",
+        "x": 50,
+        "y": 465.020312,
+        "w": 512,
+        "h": 28.689062,
+        "lines": [
+          [
+            {
+              "text": "Chronicle Continuation Banner",
+              "width": 162.556152,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ]
+        ]
+      },
+      {
+        "type": "body",
+        "x": 50,
+        "y": 499.709375,
+        "w": 248,
+        "h": 71.171875,
+        "lines": [
+          [
+            {
+              "text": "This paragraph appears below the column-spanning ",
+              "width": 233.476563,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "banner. Column flow resets to column zero below the ",
+              "width": 237.900391,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "banner, ensuring that the full-width heading clears all ",
+              "width": 236.259766,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "preceding float obstacles and boxes without visual ",
+              "width": 225.136719,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "collisions.",
+              "width": 43.349609,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ]
+        ]
+      },
+      {
+        "type": "body",
+        "x": 50,
+        "y": 580.88125,
+        "w": 248,
+        "h": 57.171875,
+        "lines": [
+          [
+            {
+              "text": "A final paragraph completes the two-column layout ",
+              "width": 227.34375,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "verification and confirms that normal multi-column ",
+              "width": 222.861328,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "reading order resumes unimpeded after both the float ",
+              "width": 239.033203,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ],
+          [
+            {
+              "text": "and the spanning barrier.",
+              "width": 110.634766,
+              "ascent": 905.273438,
+              "descent": 211.914063,
+              "fontFamily": ""
+            }
+          ]
+        ]
+      }
+    ]
+  }
+]

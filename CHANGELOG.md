@@ -42,6 +42,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `ElementStyle` with synthetic small caps fallback for fonts lacking an OpenType `smcp` table.
 - **Story float auto-height and runaround**: Support content-measured natural height and
   multi-column/page runaround splitting for story block floats.
+- **Outer-edge story floats**: `placement.align: "outer"` pins a story float to the edge nearest the page's outer margin (right on even pages, left on odd) whichever column the cursor is in; `placement.bleed` extends its boxes outward past the story edge. An oversized outer float continues on the next page.
 - **Runnable native TOC book example**:
   [JSON, Node.js runner, and authoring guide](docs/examples/native-toc/README.md)
   using the existing `loadDocument` → `VMPrintEngine` → `layout()` API. The

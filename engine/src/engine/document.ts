@@ -106,7 +106,7 @@ const ZONE_LAYOUT_KEYS = new Set(['columns', 'gap', 'frameOverflow', 'worldBehav
 const STRIP_LAYOUT_KEYS = new Set(['tracks', 'gap']);
 const TABLE_COLUMN_KEYS = new Set(['mode', 'value', 'fr', 'min', 'max', 'basis', 'minContent', 'maxContent', 'grow', 'shrink']);
 const DROP_CAP_KEYS = new Set(['enabled', 'lines', 'characters', 'gap', 'characterStyle']);
-const STORY_LAYOUT_DIRECTIVE_KEYS = new Set(['mode', 'x', 'y', 'align', 'wrap', 'gap', 'shape', 'path', 'exclusionAssembly', 'zIndex']);
+const STORY_LAYOUT_DIRECTIVE_KEYS = new Set(['mode', 'x', 'y', 'align', 'wrap', 'gap', 'bleed', 'shape', 'path', 'exclusionAssembly', 'zIndex']);
 const SPATIAL_FIELD_KEYS = new Set(['kind', 'clip', 'overflow', 'x', 'y', 'align', 'wrap', 'gap', 'shape', 'path', 'exclusionAssembly', 'hidden', 'zIndex', 'traversalInteraction', 'strictLineBoxContainment']);
 const SIMULATION_DIRECTIVE_KEYS = new Set(['enabled', 'maxTicks', 'updateKind', 'x', 'y', 'label']);
 const SIMULATION_MOTION_AXIS_KEYS = new Set(['start', 'velocity', 'amplitude', 'frequency', 'phase']);
@@ -670,13 +670,14 @@ function validateStoryLayoutDirective(value: unknown, path: string, documentPath
     if (directive.wrap !== undefined && !validWraps.has(directive.wrap as string)) {
         contractError(documentPath, `${path}.wrap`, 'expected one of: around, top-bottom, none.');
     }
-    const validAligns = new Set(['left', 'right', 'center']);
+    const validAligns = new Set(['left', 'right', 'center', 'outer']);
     if (directive.align !== undefined && !validAligns.has(directive.align as string)) {
-        contractError(documentPath, `${path}.align`, 'expected one of: left, right, center.');
+        contractError(documentPath, `${path}.align`, 'expected one of: left, right, center, outer.');
     }
     if (directive.x !== undefined) assertFiniteNumberAt(directive.x, `${path}.x`, documentPath);
     if (directive.y !== undefined) assertFiniteNumberAt(directive.y, `${path}.y`, documentPath);
     if (directive.gap !== undefined) assertFiniteNumberAt(directive.gap, `${path}.gap`, documentPath);
+    if (directive.bleed !== undefined) assertFiniteNumberAt(directive.bleed, `${path}.bleed`, documentPath);
     if (directive.zIndex !== undefined) assertFiniteNumberAt(directive.zIndex, `${path}.zIndex`, documentPath);
     if (directive.path !== undefined) assertStringAt(directive.path, `${path}.path`, documentPath);
     const validShapes = new Set(['rect', 'circle', 'ellipse', 'polygon']);
@@ -720,7 +721,7 @@ function validateSpatialFieldDirective(value: unknown, path: string, documentPat
         contractError(documentPath, `${path}.wrap`, 'expected one of: around, top-bottom, none.');
     }
     if (directive.align !== undefined && !validAligns.has(directive.align as string)) {
-        contractError(documentPath, `${path}.align`, 'expected one of: left, right, center.');
+        contractError(documentPath, `${path}.align`, 'expected one of: left, right, center, outer.');
     }
     if (directive.gap !== undefined) {
         assertFiniteNumberAt(directive.gap, `${path}.gap`, documentPath);
