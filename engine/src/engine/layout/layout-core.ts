@@ -608,7 +608,7 @@ export class LayoutProcessor extends TextProcessor {
             const renderedChar = renderedText[renderedIndex];
             const sourceChar = sourceText[sourceIndex];
 
-            if (renderedChar === sourceChar) {
+            if (renderedChar === sourceChar || renderedChar.toUpperCase() === sourceChar.toUpperCase()) {
                 renderedIndex += 1;
                 sourceIndex += 1;
                 continue;
