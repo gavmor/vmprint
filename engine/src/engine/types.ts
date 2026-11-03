@@ -375,6 +375,7 @@ export interface ElementProperties extends Record<string, any> {
     toc?: {
         title?: string;
         levelFilter?: number[];
+        semanticRoleFilter?: string[];
         style?: Record<string, unknown>;
     };
     /**

@@ -23,6 +23,7 @@ type TocEntry = {
 type TocProperties = {
     title?: string;
     levelFilter?: number[];
+    semanticRoleFilter?: string[];
     style?: Record<string, unknown>;
 };
 
@@ -223,6 +224,7 @@ export class TocPackager implements PackagerUnit {
     private readEntries(context: PackagerContext): TocEntry[] {
         const tocProps = this.getTocProperties();
         const levelFilter = tocProps.levelFilter;
+        const semanticRoleFilter = tocProps.semanticRoleFilter;
         const signals = context.readActorSignals(HEADING_SIGNAL_TOPIC);
         // The bus preserves first publication order when a keyed heading moves.
         // Sorting by page/y would interleave the columns of a story.
@@ -230,11 +232,13 @@ export class TocPackager implements PackagerUnit {
             .map((signal) => ({
                 heading: String(signal.payload?.heading ?? ''),
                 pageIndex: Number.isFinite(signal.pageIndex) ? Number(signal.pageIndex) : Number.POSITIVE_INFINITY,
-                level: signal.payload?.level != null ? Number(signal.payload.level) : undefined
+                level: signal.payload?.level != null ? Number(signal.payload.level) : undefined,
+                semanticRole: typeof signal.payload?.semanticRole === 'string' ? signal.payload.semanticRole : undefined
             }))
             .filter((e) => e.heading.length > 0)
             .filter((e) => Number.isFinite(e.pageIndex))
-            .filter((e) => !levelFilter || levelFilter.length === 0 || (e.level != null && levelFilter.includes(e.level)));
+            .filter((e) => !levelFilter || levelFilter.length === 0 || (e.level != null && levelFilter.includes(e.level)))
+            .filter((e) => !semanticRoleFilter || semanticRoleFilter.length === 0 || (e.semanticRole != null && semanticRoleFilter.includes(e.semanticRole)));
     }
 
     private getTocProperties(): TocProperties {
