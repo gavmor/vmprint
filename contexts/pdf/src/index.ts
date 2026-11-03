@@ -200,6 +200,26 @@ export class PdfContext implements Context {
         const docAny = this.doc as any;
         const fontSize = Number(docAny?._fontSize) || 12;
         const baselinePx = ((options?.ascent ?? 0) / 1000) * fontSize;
+        if (options?.lineBreak === false) {
+            // PDFKit wraps whenever width is present, even with lineBreak:false.
+            // Layout has already wrapped this segment, so don't let PDFKit
+            // rewrap it using different font metrics and discard its remainder.
+            const { width, height, link, align, ...unwrapped } = options;
+            const measuredWidth = align === 'center' || align === 'right' || (link && width == null)
+                ? this.doc.widthOfString(str, unwrapped)
+                : 0;
+            const drawX = width != null && align === 'right'
+                ? x + width - measuredWidth
+                : width != null && align === 'center'
+                    ? x + (width - measuredWidth) / 2
+                    : x;
+            this.doc.text(str, drawX, y, { ...unwrapped, baseline: -baselinePx });
+            if (link) {
+                this.doc.link(drawX, y, align === 'center' || align === 'right' ? measuredWidth : width ?? measuredWidth,
+                    height ?? this.doc.currentLineHeight(), link);
+            }
+            return this;
+        }
         const opts = { ...(options || {}), baseline: -baselinePx } as any;
         this.doc.text(str, x, y, opts);
         return this;
